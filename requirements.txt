@@ -4,3 +4,4 @@ flask-mysqldb
 flask-jwt-extended
 bcrypt
 mysqlclient
+pymysql
