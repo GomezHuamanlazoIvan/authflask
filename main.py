@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, send_file
 from flask_jwt_extended import (
     JWTManager, create_access_token, create_refresh_token,
     jwt_required, get_jwt_identity
@@ -11,18 +11,15 @@ from datetime import timedelta
 app = Flask(__name__)
 CORS(app)
 
-# Configuración de JWT usando variables de entorno
 app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'supersecretkey')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(minutes=1)
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=7)
 
 jwt = JWTManager(app)
 
-# Usuarios en memoria (solo para pruebas/demos, se borra al reiniciar)
 users = {}
 user_id_counter = 1
 
-# Registro de usuario
 @app.route('/register', methods=['POST'])
 def register():
     global user_id_counter
@@ -40,7 +37,6 @@ def register():
     user_id_counter += 1
     return jsonify(msg='Usuario registrado'), 201
 
-# Login y generación de tokens
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -53,7 +49,6 @@ def login():
         return jsonify(access_token=access_token, refresh_token=refresh_token), 200
     return jsonify(msg='Credenciales incorrectas'), 401
 
-# Renovación de token
 @app.route('/refresh', methods=['POST'])
 @jwt_required(refresh=True)
 def refresh():
@@ -61,7 +56,6 @@ def refresh():
     new_access_token = create_access_token(identity=str(user_id))
     return jsonify(access_token=new_access_token), 200
 
-# Ruta protegida
 @app.route('/protected', methods=['GET'])
 @jwt_required()
 def protected():
@@ -70,4 +64,13 @@ def protected():
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return send_file('index.html')
+
+@app.route('/dashboard')
+def dashboard():
+    return send_file('dashboard.html')
+
+@app.route('/dashboard.html')
+def dashboard_html():
+    return send_file('dashboard.html')
+
