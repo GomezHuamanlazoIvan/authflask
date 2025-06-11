@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard - Importancia del Token</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4a90e2;
+      --secondary-color: #1c1c1c;
+      --accent-color: #f0f2f5;
+      --light: #ffffff;
+      --dark: #2d2d2d;
+      --success: #22c55e;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--accent-color);
+      color: var(--secondary-color);
+      line-height: 1.6;
+    }
+
+    /* Header con navegación */
+    .navbar {
+      background: linear-gradient(135deg, var(--primary-color), #3a6ea5);
+      color: var(--light);
+      padding: 15px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .navbar-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+
+    .navbar h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8em;
+    }
+
+    .navbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .session-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9em;
+      font-weight: 500;
+    }
+
+    .session-active {
+      background: rgba(34, 197, 94, 0.2);
+      color: #16a34a;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .session-expired {
+      background: rgba(239, 68, 68, 0.2);
+      color: #dc2626;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .status-active { background: #16a34a; }
+    .status-expired { background: #dc2626; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .logout-btn {
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9em;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .protected-btn {
+      padding: 8px 16px;
+      background: var(--success);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9em;
+    }
+
+    .protected-btn:hover {
+      background: #16a34a;
+    }
+
+    /* Header principal */
+    header {
+      background: linear-gradient(135deg, var(--primary-color), #3a6ea5);
+      color: var(--light);
+      padding: 60px 20px;
+      text-align: center;
+      margin-top: -1px;
+    }
+
+    header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3em;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 1.2em;
+      opacity: 0.9;
+    }
+
+    /* Contenido principal */
+    main {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    section {
+      background-color: var(--light);
+      border-radius: 10px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    section:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: var(--primary-color);
+      font-size: 1.8em;
+      margin-bottom: 15px;
+    }
+
+    p, li {
+      font-size: 1em;
+      margin-bottom: 10px;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    .highlight {
+      background-color: #d6e4f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #194d8a;
+      font-weight: 600;
+    }
+
+    code {
+      background-color: #eef1f5;
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.95em;
+    }
+
+    /* Sección de información protegida */
+    .protected-section {
+      background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+      border-left: 4px solid var(--success);
+      margin-top: 20px;
+    }
+
+    .protected-info {
+      background: var(--light);
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+      border: 1px solid #e2e8f0;
+      font-family: monospace;
+      font-size: 0.9em;
+      color: var(--dark);
+    }
+
+    /* Footer */
+    footer {
+      background-color: var(--dark);
+      color: #ccc;
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9em;
+      margin-top: 40px;
+    }
+
+    /* Mensajes de estado */
+    .alert {
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px auto;
+      max-width: 600px;
+      text-align: center;
+      font-weight: 500;
+      display: none;
+    }
+
+    .alert-error {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .alert-warning {
+      background: #fffbeb;
+      color: #92400e;
+      border: 1px solid #fed7aa;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .navbar-content {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .navbar-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      header h1 {
+        font-size: 2.2em;
+      }
+
+      main {
+        padding: 0 15px;
+      }
+
+      section {
+        padding: 20px;
+      }
+    }
+
+    /* Animaciones */
+    .fade-in {
+      animation: fadeIn 0.6s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Barra de navegación -->
+  <nav class="navbar">
+    <div class="navbar-content">
+      <h1>Dashboard</h1>
+      <div class="navbar-actions">
+        <div id="sessionStatus" class="session-status session-active">
+          <span id="statusDot" class="status-dot status-active"></span>
+          <span id="statusText">Sesión activa</span>
+        </div>
+        <button class="logout-btn" onclick="logout()">Cerrar sesión</button>
+      </div>
+    </div>
+  </nav>
+  <div style="text-align:center; margin: 20px 0;">
+    <span style="font-weight:600;">Expiración del token en: </span>
+    <span id="tokenTimer" style="font-family:monospace; color:#4a90e2; font-size:1.2em;">--:--</span>
+  </div>
+
+  <!-- Alerta para redirección -->
+  <div class="alert alert-error" id="redirectAlert">
+    <strong>Sesión expirada.</strong> Serás redirigido al login en <span id="countdown">5</span> segundos...
+  </div>
+
+  <div class="alert alert-warning" id="accessAlert">
+    <strong>Acceso denegado.</strong> Por favor, inicia sesión primero.
+  </div>
+
+  <header class="fade-in">
+    <h1>Importancia del Uso de Tokens</h1>
+    <p>Autenticación segura y moderna en aplicaciones web y móviles</p>
+  </header>
+
+  <main class="fade-in">
+    <section>
+      <h2>¿Qué es un Token?</h2>
+      <p>
+        Un <span class="highlight">token</span> es una cadena de texto que actúa como prueba de identidad. Se genera después de que un usuario inicia sesión correctamente y se utiliza para validar su identidad sin reenviar sus credenciales cada vez.
+      </p>
+    </section>
+
+    <section>
+      <h2>Tipos Comunes de Tokens</h2>
+      <ul>
+        <li><strong>Bearer Token:</strong> Permite el acceso directo al recurso, enviado usualmente en la cabecera HTTP <code>Authorization</code>.</li>
+        <li><strong>JWT (JSON Web Token):</strong> Incluye datos estructurados en formato JSON codificado y firmado digitalmente.</li>
+        <li><strong>Refresh Token:</strong> Se usa para obtener un nuevo token de acceso cuando el anterior expira.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Estructura de un JWT</h2>
+      <p>Los JSON Web Tokens tienen 3 partes separadas por puntos:</p>
+      <ul>
+        <li><span class="highlight">Header:</span> Indica el algoritmo de cifrado y el tipo de token (ej. <code>HS256</code>).</li>
+        <li><span class="highlight">Payload:</span> Contiene los datos del usuario como <code>sub</code>, <code>exp</code>, <code>role</code>, etc.</li>
+        <li><span class="highlight">Signature:</span> Se genera usando el header y payload codificados más una clave secreta.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Ventajas del Uso de Tokens</h2>
+      <ul>
+        <li><strong>Sin sesión en el servidor:</strong> Ideal para sistemas sin estado.</li>
+        <li><strong>Escalabilidad:</strong> Los tokens funcionan bien con APIs distribuidas y microservicios.</li>
+        <li><strong>Portabilidad:</strong> Un token puede ser usado en diversas aplicaciones.</li>
+        <li><strong>Seguridad:</strong> Reduce el uso de credenciales sensibles.</li>
+      </ul>
+    </section>
+
+    <section class="protected-section">
+      <h2>Información Protegida por Token</h2>
+      <p>
+        Esta sección demuestra cómo los tokens protegen el acceso a información sensible. 
+        Solo usuarios autenticados pueden ver el contenido a continuación:
+      </p>
+      <div class="protected-info" id="protectedInfo">
+        <em>Haz clic en "Ver Info Protegida" para acceder al contenido protegido...</em>
+        <br><br>
+        <button class="protected-btn" onclick="getProtectedInfo()">Ver Info Protegida</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Buenas Prácticas</h2>
+      <ul>
+        <li>Evita almacenar tokens en <code>localStorage</code>; usa <code>httpOnly cookies</code> si es posible.</li>
+        <li>Utiliza HTTPS para proteger los tokens en tránsito.</li>
+        <li>Establece tiempos de expiración cortos (<code>exp</code>) y permite renovación segura.</li>
+        <li>Valida siempre la firma del token en el backend.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Casos de Uso Reales</h2>
+      <p>
+        Los tokens son ampliamente usados en:
+      </p>
+      <ul>
+        <li>APIs RESTful y GraphQL.</li>
+        <li>Aplicaciones móviles con backend sin sesión.</li>
+        <li>Sistemas de inicio de sesión único (SSO).</li>
+        <li>Plataformas como Firebase, Auth0, AWS Cognito, etc.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Conclusión</h2>
+      <p>
+        Los <span class="highlight">tokens</span> son una herramienta esencial en la autenticación moderna. Comprender su funcionamiento y aplicarlos de forma segura es fundamental para el desarrollo web y móvil en la actualidad.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2025 Dashboard - Sistema de Autenticación con Tokens - Gomez - Figueroa
+  </footer>
+
+  <script>
+    let accessToken = '';
+    let tokenCheckInterval;
+    let redirectTimer;
+    let tokenTimerInterval;
+
+    // Verificar autenticación al cargar la página
+    window.onload = function() {
+      checkAuthentication();
+    }
+
+    // Verificar si el usuario está autenticado
+    function checkAuthentication() {
+      accessToken = localStorage.getItem('accessToken') || '';
+      
+      if (!accessToken) {
+        showAccessDenied();
+        return;
+      }
+      // Iniciar temporizador de expiración
+      startTokenTimer();
+      // Verificar token con el servidor
+      verifyTokenWithServer();
+      startTokenCheck();
+    }
+
+    function startTokenTimer() {
+      stopTokenTimer();
+      const exp = getTokenExpiration(accessToken);
+      if (!exp) {
+        document.getElementById('tokenTimer').textContent = '--:--';
+        return;
+      }
+      updateTokenTimer(exp);
+      tokenTimerInterval = setInterval(() => {
+        updateTokenTimer(exp);
+      }, 1000);
+    }
+
+    function stopTokenTimer() {
+      if (tokenTimerInterval) {
+        clearInterval(tokenTimerInterval);
+        tokenTimerInterval = null;
+      }
+    }
+
+    function getTokenExpiration(token) {
+      if (!token) return null;
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload.exp ? payload.exp : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function updateTokenTimer(exp) {
+      const now = Math.floor(Date.now() / 1000);
+      let diff = exp - now;
+      if (diff < 0) diff = 0;
+      const min = Math.floor(diff / 60).toString().padStart(2, '0');
+      const sec = (diff % 60).toString().padStart(2, '0');
+      document.getElementById('tokenTimer').textContent = `${min}:${sec}`;
+      if (diff === 0) {
+        stopTokenTimer();
+        handleTokenExpiry();
+      }
+    }
+
+    // Verificar token con el servidor
+    function verifyTokenWithServer() {
+      fetch('http://localhost:5000/protected', {
+        method: 'GET',
+        headers: {'Authorization': 'Bearer ' + accessToken}
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.msg && !isTokenError(data.msg)) {
+          updateSessionStatus('active', 'Sesión activa');
+        } else {
+          handleTokenExpiry();
+        }
+      })
+      .catch(error => {
+        console.error('Error verificando token:', error);
+        handleTokenExpiry();
+      });
+    }
+
+    // Verificar si el mensaje indica error de token
+    function isTokenError(message) {
+      const errorKeywords = ['expirado', 'invalid', 'unauthorized', 'token', 'expired'];
+      return errorKeywords.some(keyword => message.toLowerCase().includes(keyword));
+    }
+
+    // Obtener información protegida
+    function getProtectedInfo() {
+      if (!accessToken) {
+        document.getElementById('protectedInfo').innerHTML = 
+          '<strong style="color: #dc2626;">Error:</strong> No hay token de acceso disponible.';
+        return;
+      }
+
+      fetch('http://localhost:5000/protected', {
+        method: 'GET',
+        headers: {'Authorization': 'Bearer ' + accessToken}
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.msg && !isTokenError(data.msg)) {
+          document.getElementById('protectedInfo').innerHTML = 
+            `<strong style="color: #16a34a;">✓ Acceso autorizado:</strong><br>
+            <div style="margin-top: 10px; padding: 10px; background: #f0f9ff; border-left: 3px solid #0ea5e9;">
+              ${data.msg}
+            </div>
+            <div style="margin-top: 10px; font-size: 0.8em; color: #6b7280;">
+              <strong>Token:</strong> ${accessToken.substring(0, 50)}...
+            </div>`;
+        } else {
+          handleTokenExpiry();
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('protectedInfo').innerHTML = 
+          '<strong style="color: #dc2626;">Error:</strong> No se pudo obtener la información protegida.';
+      });
+    }
+
+    // Actualizar estado de la sesión
+    function updateSessionStatus(status, text) {
+      const statusElement = document.getElementById('sessionStatus');
+      const statusDot = document.getElementById('statusDot');
+      const statusText = document.getElementById('statusText');
+      
+      statusText.textContent = text;
+      
+      if (status === 'active') {
+        statusElement.className = 'session-status session-active';
+        statusDot.className = 'status-dot status-active';
+      } else {
+        statusElement.className = 'session-status session-expired';
+        statusDot.className = 'status-dot status-expired';
+      }
+    }
+
+    // Manejar expiración del token
+    function handleTokenExpiry() {
+      localStorage.removeItem('accessToken');
+      accessToken = '';
+      updateSessionStatus('expired', 'Sesión expirada');
+      stopTokenCheck();
+      showRedirectAlert();
+    }
+
+    // Mostrar alerta de acceso denegado
+    function showAccessDenied() {
+      document.getElementById('accessAlert').style.display = 'block';
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 3000);
+    }
+
+    // Mostrar alerta de redirección
+    function showRedirectAlert() {
+      const alertElement = document.getElementById('redirectAlert');
+      const countdownElement = document.getElementById('countdown');
+      alertElement.style.display = 'block';
+      
+      let countdown = 5;
+      redirectTimer = setInterval(() => {
+        countdown--;
+        countdownElement.textContent = countdown;
+        
+        if (countdown <= 0) {
+          clearInterval(redirectTimer);
+          window.location.href = 'index.html';
+        }
+      }, 1000);
+    }
+
+    // Iniciar verificación periódica del token
+    function startTokenCheck() {
+      stopTokenCheck();
+      tokenCheckInterval = setInterval(() => {
+        if (accessToken) {
+          verifyTokenWithServer();
+        } else {
+          handleTokenExpiry();
+        }
+      }, 10000); // Cada 10 segundos
+    }
+
+    // Detener verificación del token
+    function stopTokenCheck() {
+      if (tokenCheckInterval) {
+        clearInterval(tokenCheckInterval);
+        tokenCheckInterval = null;
+      }
+    }
+
+    // Cerrar sesión
+    function logout() {
+      localStorage.removeItem('accessToken');
+      accessToken = '';
+      stopTokenCheck();
+      window.location.href = 'index.html';
+    }
+
+    // Limpiar intervalos al cerrar la página
+    window.addEventListener('beforeunload', function() {
+      stopTokenCheck();
+      stopTokenTimer();
+      if (redirectTimer) {
+        clearInterval(redirectTimer);
+      }
+    });
+  </script>
+</body>
+</html>
