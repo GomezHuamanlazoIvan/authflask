@@ -475,7 +475,7 @@
 
     // Verificar token con el servidor
     function verifyTokenWithServer() {
-      fetch('http://localhost:5000/protected', {
+      fetch('https://authflask.onrender.com/protected', {
         method: 'GET',
         headers: {'Authorization': 'Bearer ' + accessToken}
       })
@@ -507,7 +507,7 @@
         return;
       }
 
-      fetch('http://localhost:5000/protected', {
+      fetch('https://authflask.onrender.com/protected', {
         method: 'GET',
         headers: {'Authorization': 'Bearer ' + accessToken}
       })
@@ -624,3 +624,4 @@
   </script>
 </body>
 </html>
+
