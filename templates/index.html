@@ -217,7 +217,7 @@
             
             if (accessToken) {
                 // Verificar el token con el servidor
-                fetch('http://localhost:5000/protected', {
+                fetch('https://authflask.onrender.com/protected', {
                     method: 'GET',
                     headers: {'Authorization': 'Bearer ' + accessToken}
                 })
@@ -268,7 +268,7 @@
             loginBtn.disabled = true;
             loginBtn.innerHTML = '<span class="loading"></span>Iniciando sesión...';
 
-            fetch('http://localhost:5000/login', {
+            fetch('https://authflask.onrender.com/login', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({username, password})
@@ -337,7 +337,7 @@
             }
             registerBtn.disabled = true;
             registerBtn.innerHTML = '<span class="loading"></span>Registrando...';
-            fetch('http://localhost:5000/register', {
+            fetch('https://authflask.onrender.com/register', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({username, password})
