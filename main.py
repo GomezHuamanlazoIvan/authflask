@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, send_from_directory
 from flask_jwt_extended import (
     JWTManager, create_access_token, create_refresh_token,
     jwt_required, get_jwt_identity
@@ -64,7 +64,7 @@ def protected():
 
 @app.route('/')
 def home():
-    return send_file('index.html')
+    return send_from_directory('.', 'index.html')
 
 @app.route('/dashboard')
 def dashboard():
@@ -73,4 +73,5 @@ def dashboard():
 @app.route('/dashboard.html')
 def dashboard_html():
     return send_file('dashboard.html')
+
 
