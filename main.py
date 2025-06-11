@@ -64,7 +64,7 @@ def protected():
 
 @app.route('/')
 def home():
-    return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'index.html')
+    return send_file(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'index.html'))
 
 @app.route('/dashboard')
 def dashboard():
@@ -73,6 +73,7 @@ def dashboard():
 @app.route('/dashboard.html')
 def dashboard_html():
     return send_file('dashboard.html')
+
 
 
 
