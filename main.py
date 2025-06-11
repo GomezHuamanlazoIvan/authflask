@@ -85,6 +85,3 @@ def refresh():
 def protected():
     user_id = get_jwt_identity()
     return jsonify(msg=f'Acceso concedido al usuario {user_id}')
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))

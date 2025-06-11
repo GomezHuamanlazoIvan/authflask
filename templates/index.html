@@ -1,6 +1,399 @@
-<!-- Copia de index.html para templates -->
-{% raw %}
 <!DOCTYPE html>
 <html lang="es">
-<!-- ...existing code... -->
-{% endraw %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Iniciar Sesión</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #333;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #adb5bd;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-message {
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container fade-in">
+        <div class="logo">
+            <h1>Dashboard</h1>
+            <p>Accede a tu panel de control</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Usuario</label>
+                <input type="text" id="username" placeholder="Ingresa tu usuario" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" placeholder="Ingresa tu contraseña" required>
+            </div>
+
+            <button type="submit" class="login-btn" id="loginBtn">
+                Iniciar Sesión
+            </button>
+        </form>
+        <button class="login-btn" id="showRegisterBtn" style="background: #fff; color: #667eea; border: 2px solid #667eea; margin-bottom: 10px;">Crear nuevo usuario</button>
+
+        <form id="registerForm" style="display:none; margin-top: 10px;">
+            <div class="form-group">
+                <label for="regUsername">Nuevo usuario</label>
+                <input type="text" id="regUsername" placeholder="Usuario nuevo" required>
+            </div>
+            <div class="form-group">
+                <label for="regPassword">Nueva contraseña</label>
+                <input type="password" id="regPassword" placeholder="Contraseña nueva" required>
+                <div id="passwordStrength" style="margin-top: 8px; font-size: 13px;"></div>
+            </div>
+            <button type="submit" class="login-btn" id="registerBtn">Registrar</button>
+            <button type="button" class="login-btn" id="cancelRegisterBtn" style="background: #fff; color: #667eea; border: 2px solid #667eea; margin-top: 10px;">Cancelar</button>
+        </form>
+        <div class="status-message" id="statusMessage"></div>
+    </div>
+
+    <script>
+        // Verificar si ya hay una sesión activa al cargar la página
+        window.onload = function() {
+            checkExistingSession();
+        }
+
+        // Verificar si hay una sesión activa
+        function checkExistingSession() {
+            const accessToken = localStorage.getItem('accessToken') || '';
+            
+            if (accessToken) {
+                // Verificar el token con el servidor
+                fetch('http://localhost:5000/protected', {
+                    method: 'GET',
+                    headers: {'Authorization': 'Bearer ' + accessToken}
+                })
+                .then(res => res.json())
+                .then(data => {
+                    // Si el token es válido, redirigir al dashboard
+                    if (data.msg && !isTokenError(data.msg)) {
+                        showStatusMessage('Sesión activa, redirigiendo...', 'success');
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 1000);
+                    } else {
+                        // Token expirado, limpiar localStorage
+                        localStorage.removeItem('accessToken');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error verificando sesión:', error);
+                    localStorage.removeItem('accessToken');
+                });
+            }
+        }
+
+        // Verificar si el mensaje indica error de token
+        function isTokenError(message) {
+            const errorKeywords = ['expirado', 'invalid', 'unauthorized', 'token', 'expired'];
+            return errorKeywords.some(keyword => message.toLowerCase().includes(keyword));
+        }
+
+        // Manejar el formulario de login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            login();
+        });
+
+        // Función de login
+        function login() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const loginBtn = document.getElementById('loginBtn');
+            
+            if (!username || !password) {
+                showStatusMessage('Por favor completa todos los campos', 'error');
+                return;
+            }
+
+            // Mostrar estado de carga
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<span class="loading"></span>Iniciando sesión...';
+
+            fetch('http://localhost:5000/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username, password})
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.access_token) {
+                    // Guardar token
+                    localStorage.setItem('accessToken', data.access_token);
+                    
+                    showStatusMessage('¡Login exitoso! Redirigiendo...', 'success');
+                    
+                    // Redirigir al dashboard después de 1.5 segundos
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1500);
+                    
+                } else {
+                    showStatusMessage(data.msg || 'Error de autenticación', 'error');
+                    localStorage.removeItem('accessToken');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showStatusMessage('Error de conexión con el servidor', 'error');
+                localStorage.removeItem('accessToken');
+            })
+            .finally(() => {
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = 'Iniciar Sesión';
+            });
+        }
+
+        // Mostrar/ocultar formulario de registro
+        document.getElementById('showRegisterBtn').onclick = function() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('showRegisterBtn').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+            document.getElementById('statusMessage').style.display = 'none';
+        };
+        document.getElementById('cancelRegisterBtn').onclick = function() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('showRegisterBtn').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('statusMessage').style.display = 'none';
+        };
+
+        // Manejar el formulario de registro
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            registerUser();
+        });
+
+        function registerUser() {
+            const username = document.getElementById('regUsername').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+            const registerBtn = document.getElementById('registerBtn');
+            const strength = getPasswordStrength(password);
+            if (!username || !password) {
+                showStatusMessage('Por favor completa todos los campos', 'error');
+                return;
+            }
+            if (strength === 1) {
+                showStatusMessage('La contraseña es demasiado débil. Usa al menos 8 caracteres, mayúsculas, números y símbolos.', 'error');
+                return;
+            }
+            registerBtn.disabled = true;
+            registerBtn.innerHTML = '<span class="loading"></span>Registrando...';
+            fetch('http://localhost:5000/register', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username, password})
+            })
+            .then(res => res.json().then(data => ({status: res.status, body: data})))
+            .then(({status, body}) => {
+                if (status === 201) {
+                    showStatusMessage('¡Usuario registrado! Ahora puedes iniciar sesión.', 'success');
+                    setTimeout(() => {
+                        document.getElementById('cancelRegisterBtn').click();
+                    }, 1500);
+                } else {
+                    showStatusMessage(body.msg || 'Error al registrar usuario', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showStatusMessage('Error de conexión con el servidor', 'error');
+            })
+            .finally(() => {
+                registerBtn.disabled = false;
+                registerBtn.innerHTML = 'Registrar';
+            });
+        }
+
+        // Medidor de fortaleza de contraseña
+        const regPasswordInput = document.getElementById('regPassword');
+        const passwordStrengthDiv = document.getElementById('passwordStrength');
+        regPasswordInput.addEventListener('input', function() {
+            const val = regPasswordInput.value;
+            const strength = getPasswordStrength(val);
+            let color = '#dc3545', text = 'Débil';
+            if (strength === 2) { color = '#ffc107'; text = 'Media'; }
+            if (strength === 3) { color = '#28a745'; text = 'Fuerte'; }
+            passwordStrengthDiv.textContent = val ? `Fortaleza: ${text}` : '';
+            passwordStrengthDiv.style.color = color;
+        });
+
+        function getPasswordStrength(password) {
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            if (strength <= 1) return 1; // Débil
+            if (strength === 2) return 2; // Media
+            return 3; // Fuerte
+        }
+
+        // Mostrar mensaje de estado
+        function showStatusMessage(message, type) {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.textContent = message;
+            statusDiv.className = `status-message status-${type}`;
+            statusDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
