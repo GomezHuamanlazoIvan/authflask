@@ -5,3 +5,4 @@ flask-jwt-extended
 bcrypt
 mysqlclient
 pymysql
+gunicorn
