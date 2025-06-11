@@ -1,6 +1,6 @@
 import os
 import pymysql
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_jwt_extended import (
     JWTManager, create_access_token, create_refresh_token,
     jwt_required, get_jwt_identity
@@ -85,3 +85,7 @@ def refresh():
 def protected():
     user_id = get_jwt_identity()
     return jsonify(msg=f'Acceso concedido al usuario {user_id}')
+
+@app.route('/')
+def home():
+    return render_template('index.html')
